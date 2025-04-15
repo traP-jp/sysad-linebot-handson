@@ -1,0 +1,26 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/universal
+{
+	"name": "Go Development Container",
+	"forwardPorts": [8080],
+	"postStartCommand": "docker compose up -d",
+	"postCreateCommand": "sudo apt update && sudo apt install -y mysql-client",
+	"containerEnv": {"TZ": "Asia/Tokyo"},
+	"customizations": {
+		"vscode": {
+			"extensions": ["golang.go"],
+			"settings": {
+				"files.autoSave": "onFocusChange",
+				"go.formatTool": "gofmt",
+				"[go]": {
+					"editor.defaultFormatter": "golang.go",
+					"editor.formatOnSave": true,
+					"editor.insertSpaces": false
+				}
+			}
+		},
+		"codespaces": {
+			"openFiles": ["main.go"]
+		}
+	}
+}
