@@ -1,25 +1,16 @@
-// #2 おみくじの実装
+// #1 やまびこの実装
 package main
 
 // 利用したい外部のコードを読み込む
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"log"
-	"math/rand"
 	"net/http"
 	"os"
-	"strings"
-	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
-
-// init関数はmain関数実行前の初期化のために呼び出されることがGo言語の仕様として決まっている
-func init() {
-	// ランダムな数値を生成する際のシード値の設定
-	rand.Seed(time.Now().UnixNano())
-}
 
 // main関数は最初に呼び出されることがGo言語の仕様として決まっている
 func main() {
@@ -86,51 +77,25 @@ func main() {
 
 const helpMessage = `使い方
 テキストメッセージ:
-	"おみくじ"がメッセージに入ってれば今日の運勢を占うよ！
-	それ以外はやまびこを返すよ！
+	やまびこを返すよ！
 スタンプ:
 	スタンプの情報を答えるよ！
 それ以外:
 	それ以外にはまだ対応してないよ！ごめんね...`
 
 // 返信を生成する
-func getReplyMessage(event *linebot.Event) (replyMessage string) {
+func getReplyMessage(event *linebot.Event) string {
 	// 来たメッセージの種類によって行う処理を変える
 	switch message := event.Message.(type) {
 	// テキストメッセージが来たとき
 	case *linebot.TextMessage:
-		// さらに「おみくじ」という文字列が含まれているとき
-		if strings.Contains(message.Text, "おみくじ") {
-			// おみくじ結果を取得する
-			return getFortune()
-		}
-		// それ以外のときはオウム返しする
 		return message.Text
 
 	// スタンプが来たとき
 	case *linebot.StickerMessage:
 		return fmt.Sprintf("sticker id is %v, stickerResourceType is %v", message.StickerID, message.StickerResourceType)
-
 	// それ以外のとき
 	default:
 		return helpMessage
 	}
-}
-
-// おみくじ結果の生成
-func getFortune() string {
-	oracles := map[int]string{
-		0: "大吉",
-		1: "中吉",
-		2: "小吉",
-		3: "末吉",
-		4: "吉",
-		5: "凶",
-		6: "末凶",
-		7: "小凶",
-		8: "中凶",
-		9: "大凶",
-	}
-	// rand.Intn(10)は1～10のランダムな整数を返す
-	return oracles[rand.Intn(len(oracles))]
 }

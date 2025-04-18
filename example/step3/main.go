@@ -4,18 +4,18 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/joho/godotenv"
 	"log"
 	"math/rand"
+	"net"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-
+	"github.com/joho/godotenv"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
@@ -27,7 +27,6 @@ var (
 
 // init関数はmain関数実行前の初期化のために呼び出されることがGo言語の仕様として決まっている
 func init() {
-
 	// ここで.envファイル全体を読み込みます。
 	// この読み込み処理がないと、個々の環境変数が取得出来ません。
 	// 読み込めなかったら err にエラーが入ります。
@@ -41,20 +40,21 @@ func init() {
 	// ランダムな数値を生成する際のシード値の設定
 	rand.Seed(time.Now().UnixNano())
 	// データベースへ接続する
-	db = sqlx.MustConnect(
-		"mysql",
-		fmt.Sprintf(
-			"%v@tcp(%v:%v)/%v?charset=utf8&parseTime=True&loc=Local",
-			os.Getenv("DB_USERNAME"),
-			os.Getenv("DB_HOSTNAME"),
-			os.Getenv("DB_PORT"),
-			os.Getenv("DB_DATABASE"),
-		))
+	config := mysql.Config{
+		User:                 os.Getenv("DB_USERNAME"),
+		Passwd:               os.Getenv("DB_PASSWORD"),
+		Net:                  "tcp",
+		Addr:                 net.JoinHostPort(os.Getenv("DB_HOSTNAME"), os.Getenv("DB_PORT")),
+		DBName:               os.Getenv("DB_DATABASE"),
+		AllowNativePasswords: true,
+		ParseTime:            true,
+		Loc:                  time.Local,
+	}
+	db = sqlx.MustConnect("mysql", config.FormatDSN())
 }
 
 // main関数は最初に呼び出されることがGo言語の仕様として決まっている
 func main() {
-
 	// LINEのAPIを利用する設定
 	bot, err := linebot.New(
 		os.Getenv("CHANNEL_SECRET"),

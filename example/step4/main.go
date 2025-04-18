@@ -5,7 +5,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/joho/godotenv"
 	"log"
 	"math/rand"
 	"net/http"
@@ -14,9 +13,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
-
 
 // init関数はmain関数実行前の初期化のために呼び出されることがGo言語の仕様として決まっている
 func init() {
