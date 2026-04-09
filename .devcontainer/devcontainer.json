@@ -2,7 +2,7 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/universal
 {
   "name": "Go Development Container",
-  "image": "mcr.microsoft.com/devcontainers/universal:5",
+  "image": "mcr.microsoft.com/devcontainers/universal:5.1.5",
   "forwardPorts": [8080],
   "postStartCommand": "docker compose up -d",
   "postCreateCommand": "sudo apt update && sudo apt install -y mysql-client",
